@@ -1,6 +1,11 @@
 gem 'awesome_print', :require => 'ap'
 require 'nokogiri'
 require 'open-uri'
+require 'json'
+require 'date'
+require 'rubygems'
+require 'active_support/all'
+
 
 #list of program xml urls to run through
 %w[
@@ -46,21 +51,26 @@ http://www.moodyradio.org/brd_podcast.aspx?Program=WhatDidTheySayNow
     end
   end
 
+  # Search publish date and see when episodes were posted
+  xml.xpath('//rss/channel/item/pubDate').each do |link|
+    publish = Date.parse(link.content)
+    if publish >= 7.days.ago
+      puts publish
+    end
+ end
+
+
 
 # Print out results of First Program
   require 'awesome_print'
   ap channel
   ap item[0]
 
-# Only print out item if next <item> contains 'Hour 2' string for two episode shows
+# Only print out item if second <item> contains 'Hour 2' string for two episode shows
   if item[1].to_s.include? 'Hour 2'
     ap item[1]
   end
+ end
 
 
 
-
-
-
-
-end

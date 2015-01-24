@@ -5,6 +5,7 @@ require 'json'
 require 'date'
 require 'rubygems'
 require 'active_support/all'
+require 'awesome_print'
 
 
 #list of program xml urls to run through
@@ -51,18 +52,7 @@ http://www.moodyradio.org/brd_podcast.aspx?Program=WhatDidTheySayNow
     end
   end
 
-  # Search publish date and see when episodes were posted
-  xml.xpath('//rss/channel/item/pubDate').each do |link|
-    publish = Date.parse(link.content)
-    if publish >= 7.days.ago
-      puts publish
-    end
- end
-
-
-
 # Print out results of First Program
-  require 'awesome_print'
   ap channel
   ap item[0]
 
@@ -70,6 +60,15 @@ http://www.moodyradio.org/brd_podcast.aspx?Program=WhatDidTheySayNow
   if item[1].to_s.include? 'Hour 2'
     ap item[1]
   end
+
+# Search publish date and see when episodes were posted
+  xml.xpath('//rss/channel/item/pubDate').each do |link|
+    publish = Date.parse(link.content)
+    if publish >= 7.days.ago
+      puts publish
+    end
+  end
+
  end
 
 

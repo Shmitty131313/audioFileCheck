@@ -2,7 +2,7 @@ gem 'awesome_print', :require => 'ap'
 require 'nokogiri'
 require 'open-uri'
 
-#list of program urls to run through
+#list of program xml urls to run through
 %w[
 http://www.moodyradio.org/brd_podcast.aspx?Program=ALoveLanguageMinute
 http://www.moodyradio.org/brd_podcast.aspx?Program=AuthenticIntimacy
@@ -26,27 +26,41 @@ http://www.moodyradio.org/brd_podcast.aspx?Program=WhatDidTheySayNow
 ].each do |url|
 
 # Grab xml url file
-xml = Nokogiri::XML(open(url))
+  xml = Nokogiri::XML(open(url))
 
-# Use css tags to search through doc for Program episode and information
-channel =xml.search('channel').map do |channel|
-  %w[
+# Search through doc for Program title
+  channel =xml.search('channel').map do |channel|
+    %w[
     title
   ].each_with_object({}) do |n, o|
-    o[n] = channel.at(n)
+      o[n] = channel.at(n)
     end
   end
-item = xml.search('item').map do |item|
-  %w[
+
+# Search thru doc for episode title, link, and publish date
+  item = xml.search('item').map do |item|
+    %w[
     title link pubDate
   ].each_with_object({}) do |n, o|
-    o[n] = item.at(n)
+      o[n] = item.at(n)
+    end
   end
-end
-# Print out results
-require 'awesome_print'
-ap channel
-ap item[0]
-ap item[1]
 
+
+# Print out results of First Program
+  require 'awesome_print'
+  ap channel
+  ap item[0]
+
+# Only print out item if next <item> contains 'Hour 2' string for two episode shows
+  if item[1].to_s.include? 'Hour 2'
+    ap item[1]
   end
+
+
+
+
+
+
+
+end

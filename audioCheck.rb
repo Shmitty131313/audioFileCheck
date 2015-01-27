@@ -1,4 +1,5 @@
 gem 'awesome_print', :require => 'ap'
+gem 'slack-api'
 require 'nokogiri'
 require 'open-uri'
 require 'json'
@@ -6,6 +7,7 @@ require 'date'
 require 'rubygems'
 require 'active_support/all'
 require 'awesome_print'
+
 
 
 #list of program xml urls to run through
@@ -65,11 +67,10 @@ http://www.moodyradio.org/brd_podcast.aspx?Program=WhatDidTheySayNow
   xml.xpath('//rss/channel/item/pubDate').each do |link|
     publish = Date.parse(link.content)
     if publish >= 7.days.ago
-      puts publish
+      puts publish.strftime('%a %d %b %Y').to_s + ' episode is up'
     end
   end
 
- end
-
+end
 
 
